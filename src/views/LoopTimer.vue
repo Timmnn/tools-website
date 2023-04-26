@@ -1,16 +1,22 @@
 <template>
   <div>
     <input v-model="time_input" type="number">
+    <label>
+      <input v-model="loop" type="checkbox">
+      Loop
+    </label>
     <span class="time-remaining">
       {{ time_remaining_text }}
     </span>
-    <button @click="startTimer">Start</button>
+    <button @click="startTimer" :disabled="timer_running">Start</button>
     <button :disabled="!timer_running" @click="stopTimer">Stop</button>
     <button :disabled="!timer_running" @click="resetTimer">Reset</button>
   </div>
 </template>
 
 <script>
+import alert from '../assets/alert1.wav'
+
 export default {
   name: "LoopTimer",
   data() {
@@ -19,8 +25,12 @@ export default {
       time_input: 0,
       start_time: 0,
       time_remaining_text: '',
-      seconds_remaining: null
+      seconds_remaining: null,
+      loop: false
     }
+  },
+  beforeUnmount() {
+    this.timer_running = false
   },
   methods: {
     startTimer() {
@@ -34,7 +44,11 @@ export default {
           this.time_remaining_text = this.formatTime()
           if (this.seconds_remaining <= 0) {
             this.timer_running = false
+            new Audio(alert).play()
             clearInterval(timer)
+            if (this.loop) {
+              this.startTimer()
+            }
           }
         }
       }, 50)
@@ -44,7 +58,7 @@ export default {
       this.timer_running = false
     },
     resetTimer() {
-console.log('reset timer')
+      console.log('reset timer')
       this.start_time = new Date().getTime()
     },
     formatTime() {

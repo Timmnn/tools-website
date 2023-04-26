@@ -10,5 +10,10 @@ import NavHeader from "./components/NavHeader.vue";
 </template>
 
 <style scoped>
-
+main{
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
